@@ -1,0 +1,19 @@
+{
+    "name": "Satoru Gojo",
+    "symbol": "",
+    "image": "0.png",
+    "properties": {
+      "files": [
+        {
+          "uri": "0.png",
+          "type": "image/png"
+        }
+      ],
+      "creators": [
+        {
+          "address": "5veXaJZb5J1riVnH8ADdQtdycFxHB57mKFyivdUXfsXt",
+          "share": 100
+        }
+      ]
+    }
+  }
