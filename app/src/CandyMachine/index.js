@@ -3,6 +3,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3 } from '@project-serum/anchor';
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
 import { programs } from '@metaplex/js';
+import CountdownTimer from '../CountdownTimer';
 import './CandyMachine.css';
 import {
   candyMachineProgram,
@@ -267,7 +268,38 @@ const CandyMachine = ({ walletAddress }) => {
 
   useEffect(() => {
     getCandyMachineState();
-     // eslint-disable-next-line
+    console.log('Setting interval...');
+  
+  // Use setInterval to run this piece of code every second
+  const interval = setInterval(() => {
+    const currentDate = new Date().getTime();
+    const distance = dropDate - currentDate;
+    
+    // Here it's as easy as doing some time math to get the different properties
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor(
+      (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    
+    // We have our desired output, set it in state!
+    setTimerString(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    
+    // If our distance passes zero this means that it's drop time!
+    if (distance < 0) {
+      console.log('Clearing interval...');
+      clearInterval(interval);
+    }
+  }, 1000);
+  
+  // Anytime our component unmounts let's clean up our interval
+  return () => {
+    if (interval) {
+      clearInterval(interval);
+    }
+  };
+    
   }, []);
 
   const getProvider = () => {
@@ -367,16 +399,40 @@ const renderMintedItems = () => (
     </div>
   </div>
 );
+// Create render function
+const renderDropTimer = () => {
+  // Get the current date and dropDate in a JavaScript Date object
+  const currentDate = new Date();
+  const dropDate = new Date(machineStats.goLiveData * 1000);
+
+  // If currentDate is before dropDate, render our Countdown component
+  if (currentDate < dropDate) {
+    console.log('Before drop date!');
+    // Don't forget to pass over your dropDate!
+    return <CountdownTimer dropDate={dropDate} />;
+  }
+  
+  // Else let's just return the current drop date
+  return <p>{`Drop Date: ${machineStats.goLiveDateTimeString}`}</p>;
+};
+// Our useEffect will run on comppnent load
 
   return (
 // Only show this if machineStats is available
 machineStats && (
   <div className="machine-container">
+    {/* Add this at the beginning of our component */}
+    {renderDropTimer()}
     <p>{`Drop Date: ${machineStats.goLiveDateTimeString}`}</p>
     <p>{`Items Minted: ${machineStats.itemsRedeemed} / ${machineStats.itemsAvailable}`}</p>
+    {/* Check to see if these properties are equal! */}
+        {machineStats.itemsRedeemed === machineStats.itemsAvailable ? (
+          <p className="sub-text">Sold Out 🙊</p>
+        ) : (
     <button className="cta-button mint-button" onClick={mintToken}  disabled={isMinting}> 
         Mint NFT
     </button>
+        )}
      {/* If we have mints available in our array, let's render some items */}
      {isLoadingMints && <p>LOADING MINTS...</p>}
      {mints.length > 0 && renderMintedItems()}
