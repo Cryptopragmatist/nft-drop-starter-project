@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Program, Provider, web3 } from '@project-serum/anchor';
 import { MintLayout, TOKEN_PROGRAM_ID, Token } from '@solana/spl-token';
@@ -32,6 +32,7 @@ const CandyMachine = ({ walletAddress }) => {
   const [mints, setMints] = useState([]);
   const [isMinting, setIsMinting] = useState(false);
   const [isLoadingMints, setIsLoadingMints] = useState(false);
+  //const getMachineStats = useState();
   // Actions
    // eslint-disable-next-line
   const fetchHashTable = async (hash, metadataEnabled) => {
@@ -382,7 +383,9 @@ const renderDropTimer = () => {
   return <p>{`Drop Date: ${machineStats.goLiveDateTimeString}`}</p>;
 };
 // Our useEffect will run on comppnent load
-
+useEffect(() => {
+ getCandyMachineState()
+}, []) 
   return (
 // Only show this if machineStats is available
 machineStats && (

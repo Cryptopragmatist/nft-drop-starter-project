@@ -5,7 +5,7 @@ const CountdownTimer = ({ dropDate }) => {
   // State
   const [timerString, setTimerString] = useState('');
   useEffect(() => {
-    //getCandyMachineState();
+    //getCandyMachineState()
     //console.log('Setting interval...');
   
   // Use setInterval to run this piece of code every second
@@ -38,7 +38,7 @@ const CountdownTimer = ({ dropDate }) => {
     }
   };
     
-  }, []);
+  }, [dropDate]);
   
   
 
